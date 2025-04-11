@@ -17,7 +17,7 @@ try: #Improved error handling - wrapped open
         config = yaml.safe_load(config_file)
 except Exception as e:
     print("[ERROR] Failed to load config:", e)
-    config = {
+    config = { #Default config if settings.yml corrupted or missing
         "SAVE_FOLDER": "screenshots",
         "DEFAULT_NAME": "screenshot",
         "FREEZE_MODE": False,
@@ -26,12 +26,20 @@ except Exception as e:
     }
 
 
+
+
 SAVE_DIRECTORY = config["SAVE_FOLDER"]
 DEFAULT_FILENAME = config["DEFAULT_NAME"]
 IS_FREEZE_MODE_ENABLED = config["FREEZE_MODE"]
 IS_DEBUG_MODE = config["DEBUG_MODE"]
 SNIP_HOTKEY = config["HOTKEY"]
 
+try:
+    LOG_FILE = open("logs.txt", "a")
+except:
+    print("[ERROR] Failed to open log file.")
+    with open('logs.txt', 'w') as NEW_LOGFILE:
+        NEW_LOGFILE.close()
 # Application state
 debug_counter = 0
 is_snipping_active = False
@@ -47,12 +55,14 @@ root.attributes("-topmost", True)
 
 def log_debug(message): 
     """
-    TODO: Save to logs.txt
+    TODO: Add more detailed logs.
     """
     global debug_counter
     if IS_DEBUG_MODE:
-        print(f"{debug_counter} [DEBUG] {message}")
         debug_counter += 1
+        LOG_FILE = open("logs.txt", "a")
+        LOG_FILE.write(f"\n{debug_counter} [DEBUG] {message}")
+        LOG_FILE.close()
 
 def create_save_dialog(screenshot):
     """
@@ -90,6 +100,7 @@ def create_save_dialog(screenshot):
             dialog_result["filename"] = user_input
             time.sleep(0.1)
             dialog.destroy()
+            dialog.quit()
 
     def copy_to_clipboard(): 
         """Copy screenshot to clipboard"""
@@ -107,6 +118,7 @@ def create_save_dialog(screenshot):
         dialog_result["filename"] = None
         time.sleep(0.1)
         dialog.destroy()
+        dialog.quit()
 
     
     def create_button(parent, text, command, bg, hover_bg, press_bg):
@@ -148,10 +160,9 @@ def capture_region(x1, y1, x2, y2):
     time.sleep(0.05)
     screenshot = ImageGrab.grab((x1, y1, x2, y2))
     filename = create_save_dialog(screenshot)
-    
+    log_debug(f"Recieved filename as {filename}") 
     if not filename:
         return
-        
     os.makedirs(SAVE_DIRECTORY, exist_ok=True)
     
 

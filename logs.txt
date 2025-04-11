@@ -1,1 +1,4 @@
+--LOGS--
 
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
