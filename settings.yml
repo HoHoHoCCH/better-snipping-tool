@@ -1,0 +1,5 @@
+DEBUG_MODE: true
+DEFAULT_NAME: screenshot
+FREEZE_MODE: false
+HOTKEY: ctrl+q
+SAVE_FOLDER: screenshots
