@@ -2,3 +2,43 @@
 
 1 [DEBUG] Setting up hotkeys
 2 [DEBUG] Hotkeys configured
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as None
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as None
+5 [DEBUG] Starting snipping tool
+6 [DEBUG] Recieved filename as None
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as None
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as screenshots
+5 [DEBUG] Saved screenshot to screenshots\screenshots_20250411_173633.png
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as None
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
+3 [DEBUG] Starting snipping tool
+4 [DEBUG] Recieved filename as None
+5 [DEBUG] Starting snipping tool
+6 [DEBUG] Recieved filename as screenshots
+7 [DEBUG] Saved screenshot to screenshots\screenshots_20250412_015047.png
+8 [DEBUG] Starting snipping tool
+9 [DEBUG] Recieved filename as screenshots
+10 [DEBUG] Saved screenshot to screenshots\screenshots_20250412_023909.png
+1 [DEBUG] Setting up hotkeys
+2 [DEBUG] Hotkeys configured
