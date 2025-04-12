@@ -43,6 +43,7 @@ except:
 # Application state
 debug_counter = 0
 is_snipping_active = False
+is_filename_prompt_active = False
 current_snipper = None
 is_cancelling = False
 
@@ -64,6 +65,9 @@ def log_debug(message):
         LOG_FILE.write(f"\n{debug_counter} [DEBUG] {message}")
         LOG_FILE.close()
 
+
+
+
 def create_save_dialog(screenshot):
     """
     Create and show the filename input prompt
@@ -71,6 +75,8 @@ def create_save_dialog(screenshot):
     TODO: Add hotkeys to save, copy, and close.
     """
 
+    global is_filename_prompt_active
+    is_filename_prompt_active = True
     
     dialog_result = {"filename": None}
     dialog = tk.Tk()
@@ -102,17 +108,6 @@ def create_save_dialog(screenshot):
             dialog.destroy()
             dialog.quit()
 
-    def copy_to_clipboard(): 
-        """Copy screenshot to clipboard"""
-        output = BytesIO()
-        screenshot.convert("RGB").save(output, "BMP")
-        data = output.getvalue()[14:]
-        output.close()
-        win32clipboard.OpenClipboard()
-        win32clipboard.EmptyClipboard()
-        win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
-        win32clipboard.CloseClipboard()
-
     def close_dialog():
         """Close prompt"""
         dialog_result["filename"] = None
@@ -120,20 +115,41 @@ def create_save_dialog(screenshot):
         dialog.destroy()
         dialog.quit()
 
+    def copy_to_clipboard(): 
+        """Copy screenshot to clipboard"""
+        output = BytesIO()
+        screenshot.convert("RGB").save(output, "BMP")
+        data = output.getvalue()[14:]
+        output.close()
+
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+        win32clipboard.CloseClipboard()
     
     def create_button(parent, text, command, bg, hover_bg, press_bg):
         btn = tk.Button(parent, text=text, command=command, bg=bg, fg="white",
-                       font=("Segoe UI", 10, "bold"), padx=12, pady=8, bd=0,
-                       activebackground=press_bg, relief="flat", cursor="hand2")
+                        font=("Segoe UI", 10, "bold"), padx=12, pady=8, bd=0,
+                        activebackground=press_bg, relief="flat", cursor="hand2")
         btn.pack(fill="x")
+        btn.default_bg = bg
+        btn.hover_bg = hover_bg
+        btn.press_bg = press_bg
+
         btn.bind("<Enter>", lambda e: btn.config(bg=hover_bg))
         btn.bind("<Leave>", lambda e: btn.config(bg=bg))
         btn.bind("<ButtonPress-1>", lambda e: btn.config(bg=press_bg))
         btn.bind("<ButtonRelease-1>", lambda e: btn.config(bg=hover_bg))
         return btn
 
-    create_button(container, "Save", save_screenshot, "#1976D2", "#1565C0", "#0D47A1")
-    create_button(container, "Copy to Clipboard", copy_to_clipboard, "#696969", "#4c4c4c", "#2f2f2f")
+    def trigger_button_animation(btn):
+        btn.config(bg=btn.press_bg)
+        dialog.update()
+        dialog.after(100, lambda: btn.config(bg=btn.hover_bg))
+
+    save_btn = create_button(container, "Save", save_screenshot, "#1976D2", "#1565C0", "#0D47A1")
+    copy_btn = create_button(container, "Copy to Clipboard", lambda: copy_to_clipboard(), "#696969", "#4c4c4c", "#2f2f2f")
+
 
     
     close_frame = tk.Frame(container, bg="#FFFFFF")
@@ -152,7 +168,15 @@ def create_save_dialog(screenshot):
     y_pos = (dialog.winfo_screenheight() - height) // 2
     dialog.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
 
+    dialog.bind("s", lambda e: (trigger_button_animation(save_btn), save_screenshot()))
+    dialog.bind("c", lambda e: (trigger_button_animation(copy_btn), copy_to_clipboard()))
+    dialog.bind("<Escape>", lambda e: close_dialog())
+
+    dialog.focus_force()
+
     dialog.mainloop()
+
+    is_filename_prompt_active = False
     return dialog_result["filename"]
 
 def capture_region(x1, y1, x2, y2):
